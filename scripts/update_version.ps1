@@ -1,3 +1,6 @@
+#Requires -Version "7.0"
+
+[CmdletBinding()]
 $base_dir = (Convert-Path .)
 $src_dir = $base_dir + "\src"
 # cprojファイルのバージョン情報の更新
