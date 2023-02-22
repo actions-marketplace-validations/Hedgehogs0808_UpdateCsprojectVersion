@@ -12,6 +12,8 @@ runs:
   steps:
   - name: Chackout Code
     uses: actions/checkout@v2
+    with: 
+      path: ./UpdateProjectVersion
 
   - name: ls
     shell: bash
@@ -19,7 +21,8 @@ runs:
 
   - name: Check Release View
     shell: pwsh
-    run: ./scripts/update_version.ps1
+    run: ./UpdateProjectVersion/scripts/update_version.ps1
+
 branding:
   icon: arrow-up
   color: green
