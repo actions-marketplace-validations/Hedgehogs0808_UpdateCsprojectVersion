@@ -11,7 +11,7 @@ runs:
   using: composite
   steps:
     - name: Check Release View
-      shell: powershell
+      shell: pwsh
       run: |
         $base_dir = (Convert-Path .)
         $src_dir = $base_dir + "\src"
