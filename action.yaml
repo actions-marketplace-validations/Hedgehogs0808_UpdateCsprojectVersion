@@ -10,9 +10,12 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Check Release View
-      shell: pwsh
-      run: ./scripts/update_version.ps1
+  - name: Chackout Code
+    uses: actions/checkout@v2
+
+  - name: Check Release View
+    shell: pwsh
+    run: ./scripts/update_version.ps1
 branding:
   icon: arrow-up
   color: green
