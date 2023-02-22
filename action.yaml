@@ -11,9 +11,9 @@ runs:
   using: composite
   steps:
     - name: Check Release View
-      shell: pwsh
       run: |
-        $src_dir = ".\src"
+        $base_dir = (Convert-Path .)
+        $src_dir = $base_dir + "\src"
         # cprojファイルのバージョン情報の更新
         Push-Location $src_dir
         {
@@ -70,7 +70,7 @@ runs:
         git push
         git tag -a $newver -m $newver
         git push origin $newver
-
+      shell: pwsh
 branding:
   icon: arrow-up
   color: green
