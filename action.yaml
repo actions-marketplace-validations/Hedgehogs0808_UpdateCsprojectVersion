@@ -18,7 +18,9 @@ runs:
 
   - name: ls
     shell: bash
-    run: ls -R
+    run: |
+      ls -R
+      cat "./UpdateProjectVersion/scripts/update_version.ps1" 
 
   - name: Check Release View
     shell: pwsh
