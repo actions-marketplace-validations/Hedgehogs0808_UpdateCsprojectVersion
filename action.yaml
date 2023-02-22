@@ -13,6 +13,10 @@ runs:
   - name: Chackout Code
     uses: actions/checkout@v2
 
+  - name: ls
+    shell: bash
+    run: ls -al
+
   - name: Check Release View
     shell: pwsh
     run: ./scripts/update_version.ps1
