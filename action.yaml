@@ -17,11 +17,11 @@ runs:
 
   - name: ls
     shell: bash
-    run: ls -al
+    run: ls -R
 
   - name: Check Release View
     shell: pwsh
-    run: ./UpdateProjectVersion/scripts/update_version.ps1
+    run: "./UpdateProjectVersion/scripts/update_version.ps1"
 
 branding:
   icon: arrow-up
