@@ -13,6 +13,7 @@ runs:
   - name: Chackout Code
     uses: actions/checkout@v2
     with: 
+      repository: Hedgehogs0808/UpdateCsprojectVersion
       path: ./UpdateProjectVersion
 
   - name: ls
