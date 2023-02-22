@@ -13,8 +13,7 @@ runs:
     - name: Check Release View
       shell: pwsh
       run: |
-        $base_dir = (Convert-Path .)
-        $src_dir = $base_dir + "\src"
+        $src_dir = ".\src"
         # cprojファイルのバージョン情報の更新
         Push-Location $src_dir
         {
