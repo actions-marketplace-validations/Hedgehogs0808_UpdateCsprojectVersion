@@ -29,7 +29,9 @@ runs:
 
   - name: Update Project Version
     shell: pwsh
-    run: ./UpdateProjectVersion/scripts/update_version.ps1 -src_dir ${{ inputs.targetDir }}
+    run: |
+      $newver = (./UpdateProjectVersion/scripts/update_version.ps1 -src_dir ${{ inputs.targetDir }})
+      echo "NEW_VERSION_NO=$newver" >> $GITHUB_ENV
 
   - name: Commit Update Files
     if: ${{ inputs.isCommit }}
@@ -46,8 +48,8 @@ runs:
     if: ( ${{ inputs.isCommit }} & ${{ inputs.addTag}} )
     shell: pwsh
     run: |
-      git tag -a $newver -m $newver
-      git push origin $newver
+      git tag -a $NEW_VERSION_NO -m $NEW_VERSION_NO
+      git push origin $NEW_VERSION_NO
 
 branding:
   icon: arrow-up
