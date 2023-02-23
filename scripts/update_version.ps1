@@ -63,3 +63,5 @@ Function UpdateVersion()
     git tag -a $newver -m $newver
     git push origin $newver
 }
+
+UpdateVersion()

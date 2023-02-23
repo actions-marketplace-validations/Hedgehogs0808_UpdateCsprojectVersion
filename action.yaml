@@ -8,7 +8,7 @@ inputs:
     description: Target Directory
     required: true
 runs:
-  using: composite
+  using: "composite"
   steps:
   - name: Chackout Code
     uses: actions/checkout@v3
@@ -18,7 +18,8 @@ runs:
 
   - name: Check Release View
     shell: pwsh
-    run: "./UpdateProjectVersion/scripts/update_version.ps1 -src_dir ${{ inputs.target-dir }}"
+    run: |
+      "./UpdateProjectVersion/scripts/update_version.ps1 -src_dir ${{ inputs.target-dir }}"
 
 branding:
   icon: arrow-up
