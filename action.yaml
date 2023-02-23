@@ -49,7 +49,7 @@ runs:
     if: ( ${{ inputs.isCommit }} & ${{ inputs.addTag}} )
     shell: pwsh
     run: |
-      echo ${{ steps.update-project-version.outputs.new_version_no }}
+      Write-Output ${{ steps.update-project-version.outputs.new_version_no }}
       git tag -a ${{ steps.update-project-version.outputs.new_version_no }} -m ${{ steps.update-project-version.outputs.new_version_no }}
       git push origin ${{ steps.update-project-version.outputs.new_version_no }}
 
