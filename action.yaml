@@ -11,7 +11,7 @@ runs:
   using: composite
   steps:
   - name: Chackout Code
-    uses: actions/checkout@v2
+    uses: actions/checkout@v3
     with: 
       repository: Hedgehogs0808/UpdateCsprojectVersion
       path: ./UpdateProjectVersion
@@ -24,7 +24,7 @@ runs:
 
   - name: Check Release View
     shell: pwsh
-    run: "./UpdateProjectVersion/scripts/update_version.ps1"
+    run: "./UpdateProjectVersion/scripts/update_version.ps1" -src_dir ${{ inputs.target-dir }}
 
 branding:
   icon: arrow-up

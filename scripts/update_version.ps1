@@ -1,61 +1,62 @@
-    #Requires -Version "7.0"
+#Requires -Version "7.0"
 
-    [CmdletBinding()]
-    $base_dir = (Convert-Path .)
-    $src_dir = $base_dir + "\src"
-    # cprojファイルのバージョン情報の更新
-    Push-Location $src_dir
+Param(
+    [string]$src_dir # ソースファイルのパス
+)
+
+# cprojファイルのバージョン情報の更新
+Push-Location $src_dir
+{
+    foreach ($dir in $(Get-ChildItem * | ? { $_.PSIsContainer }))
     {
-        foreach ($dir in $(Get-ChildItem * | ? { $_.PSIsContainer }))
+        Push-Location $dir
+        foreach ($file in $(Get-ChildItem *.csproj -Recurse))
         {
-            Push-Location $dir
-            foreach ($file in $(Get-ChildItem *.csproj -Recurse))
+            Write-Host $file
+            if($file | Test-Path)
             {
-                Write-Host $file
-                if($file | Test-Path)
+                $xml_doc = [xml](cat $file -enc utf8)
+                $xml_nav = $xml_doc.CreateNavigator()
+                # ライブラリバージョンの更新
+                $libver = $xml_nav.Select("/Project/PropertyGroup/Version")
+                $majVer,$minVer,$bldVer = ([string]$libver).Split(".")
+                $majVer = [int]([int]$majVer+1);
+                $newver = [string]$majVer + "." + $minVer + "." + $bldVer
+                $libver.SetValue($newver);
+                # 参照パッケージのバージョン情報の更新
+                $nodes = $xml_nav.Select("/Project/ItemGroup/PackageReference")
+                While ($nodes.MoveNext()) # MoveNext()メソッドによる値の取り出し
                 {
-                    $xml_doc = [xml](cat $file -enc utf8)
-                    $xml_nav = $xml_doc.CreateNavigator()
-                    # ライブラリバージョンの更新
-                    $libver = $xml_nav.Select("/Project/PropertyGroup/Version")
-                    $majVer,$minVer,$bldVer = ([string]$libver).Split(".")
-                    $majVer = [int]([int]$majVer+1);
-                    $newver = [string]$majVer + "." + $minVer + "." + $bldVer
-                    $libver.SetValue($newver);
-                    # 参照パッケージのバージョン情報の更新
-                    $nodes = $xml_nav.Select("/Project/ItemGroup/PackageReference")
-                    While ($nodes.MoveNext()) # MoveNext()メソッドによる値の取り出し
+                    try
                     {
-                        try
+                        $libName = $nodes.Current.getattribute("Include", "")
+                        $v=[string](gh release view -R https://github.com/maegawa-h/$libName)
+                        $v -match 'tag:\s(?<version>.*?)\s' >> $null
+                        $version = $nodes.Current.Select("./@Version")
+                        if ($Matches.version)
                         {
-                            $libName = $nodes.Current.getattribute("Include", "")
-                            $v=[string](gh release view -R https://github.com/maegawa-h/$libName)
-                            $v -match 'tag:\s(?<version>.*?)\s' >> $null
-                            $version = $nodes.Current.Select("./@Version")
-                            if ($Matches.version)
-                            {
-                                $version.SetValue($Matches.version)
-                                Write-Host [M]$libName reference version: $Matches.version;
-                            }
-                        }
-                        catch
-                        {
-                        
+                            $version.SetValue($Matches.version)
+                            Write-Host [M]$libName reference version: $Matches.version;
                         }
                     }
-                    $xml_doc.Save($file)
+                    catch
+                    {
+                    
+                    }
                 }
-                Write-Host ""
+                $xml_doc.Save($file)
             }
-            Pop-Location
+            Write-Host ""
         }
+        Pop-Location
     }
-    Pop-Location
-    git config core.filemode false
-    git add --update
-    git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-    git config --local user.name "github-actions[bot]"
-    git commit -m "Commit updated files"
-    git push
-    git tag -a $newver -m $newver
-    git push origin $newver
+}
+Pop-Location
+git config core.filemode false
+git add --update
+git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+git config --local user.name "github-actions[bot]"
+git commit -m "Commit updated files"
+git push
+git tag -a $newver -m $newver
+git push origin $newver
