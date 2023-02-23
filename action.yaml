@@ -28,11 +28,11 @@ runs:
       path: ./UpdateProjectVersion
 
   - name: Update Project Version
+    id: update-project-version
     shell: pwsh
     run: |
       $newver = (./UpdateProjectVersion/scripts/update_version.ps1 -src_dir ${{ inputs.targetDir }})
-      echo $newver
-      Write-Output "::set-output name=new_version_no::$newver"
+      Write-Output "new_version_no=$newver" >> $GITHUB_OUTPUT
 
   - name: Commit Update Files
     if: ${{ inputs.isCommit }}
@@ -49,9 +49,9 @@ runs:
     if: ( ${{ inputs.isCommit }} & ${{ inputs.addTag}} )
     shell: pwsh
     run: |
-      echo ${{ steps.runs.outputs.new_version_no }}
-      git tag -a ${{ steps.runs.outputs.new_version_no }} -m ${{ steps.runs.outputs.new_version_no }}
-      git push origin ${{ steps.runs.outputs.new_version_no }}
+      echo ${{ steps.update-project-version.outputs.new_version_no }}
+      git tag -a ${{ steps.update-project-version.outputs.new_version_no }} -m ${{ steps.update-project-version.outputs.new_version_no }}
+      git push origin ${{ steps.update-project-version.outputs.new_version_no }}
 
 branding:
   icon: arrow-up
