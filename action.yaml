@@ -32,7 +32,7 @@ runs:
     shell: pwsh
     run: |
       $newver = (./UpdateProjectVersion/scripts/update_version.ps1 -src_dir ${{ inputs.targetDir }})
-      Write-Output "new_version_no=$newver" >> $GITHUB_OUTPUT
+      Write-Output new_version_no=$newver >> $GITHUB_OUTPUT
 
   - name: Commit Update Files
     if: ${{ inputs.isCommit }}
