@@ -5,11 +5,14 @@ param(
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
+Write-Host "Start"
+
 # cprojファイルのバージョン情報の更新
 Push-Location $src_dir
-{
     foreach ($dir in $(Get-ChildItem * | ? { $_.PSIsContainer }))
     {
+        Write-Host $dir
+
         Push-Location $dir
         foreach ($file in $(Get-ChildItem *.csproj -Recurse))
         {
@@ -51,8 +54,8 @@ Push-Location $src_dir
         }
         Pop-Location
     }
-}
 Pop-Location
+
 git config core.filemode false
 git add --update
 git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
