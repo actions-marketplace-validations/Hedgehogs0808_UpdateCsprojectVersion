@@ -32,7 +32,7 @@ runs:
     run: |
       $newver = (./UpdateProjectVersion/scripts/update_version.ps1 -src_dir ${{ inputs.targetDir }})
       echo $newver
-      echo "NEW_VERSION_NO=$newver" >> $GITHUB_ENV
+      Write-Output "::set-output name=new_version_no::$newver"
 
   - name: Commit Update Files
     if: ${{ inputs.isCommit }}
@@ -49,9 +49,9 @@ runs:
     if: ( ${{ inputs.isCommit }} & ${{ inputs.addTag}} )
     shell: pwsh
     run: |
-      echo $NEW_VERSION_NO
-      git tag -a $NEW_VERSION_NO -m $NEW_VERSION_NO
-      git push origin $NEW_VERSION_NO
+      echo ${{ steps.runs.outputs.new_version_no }}
+      git tag -a ${{ steps.runs.outputs.new_version_no }} -m ${{ steps.runs.outputs.new_version_no }}
+      git push origin ${{ steps.runs.outputs.new_version_no }}
 
 branding:
   icon: arrow-up
